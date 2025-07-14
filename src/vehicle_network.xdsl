@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smile version="1.0" id="VehicleDecisionNetwork" numsamples="10000" discsamples="10000">
+  <nodes>
+    <!-- 1. Weather -->
+    <cpt id="Weather">
+      <state id="dry" />
+      <state id="wet" />
+      <probabilities>0.7 0.3</probabilities>
+    </cpt>
+
+    <!-- 2. Terrain -->
+    <cpt id="Terrain">
+      <state id="smooth" />
+      <state id="rough" />
+      <probabilities>0.6 0.4</probabilities>
+    </cpt>
+
+    <!-- 3. SensorAccuracy -->
+    <cpt id="SensorAccuracy">
+      <state id="perfect" />
+      <state id="good" />
+      <state id="poor" />
+      <parents>Weather Terrain</parents>
+      <probabilities>
+        0.55 0.15 0.3   0.1  0.3  0.6   0.25 0.3  0.45   0.01 0.04 0.95
+      </probabilities>
+    </cpt>
+
+    <!-- 4. SensorFailure -->
+    <cpt id="SensorFailure">
+      <state id="ok" />
+      <state id="failure" />
+      <parents>Weather Terrain</parents>
+      <probabilities>
+        0.9  0.1   0.5  0.5   0.9  0.1   0.4  0.6
+      </probabilities>
+    </cpt>
+
+    <!-- 5. VehiclePosition (current) -->
+    <cpt id="VehiclePosition">
+      <state id="Left" />
+      <state id="Center" />
+      <state id="Right" />
+      <probabilities>0.33 0.34 0.33</probabilities>
+    </cpt>
+
+    <!-- 6. SensorReading -->
+    <cpt id="SensorReading">
+      <state id="Left"/><state id="Center"/><state id="Right"/>
+      <parents>VehiclePosition SensorAccuracy</parents>
+      <probabilities>
+        0.99 0.005 0.005   0.005 0.99 0.005   0.005 0.005 0.99
+        0.90 0.05  0.05    0.05  0.90 0.05    0.05  0.05  0.90
+        0.35 0.325 0.325   0.325 0.35  0.325   0.325 0.325 0.35
+      </probabilities>
+    </cpt>
+
+    <!-- 7. Decision -->
+    <cpt id="Decision">
+      <state id="Left" /><state id="Stay" /><state id="Right" />
+      <parents>SensorReading</parents>
+      <probabilities>
+        0.00 0.00 1.00   0.00 1.00 0.00   1.00 0.00 0.00
+      </probabilities>
+    </cpt>
+
+    <!-- 8. VehiclePositionNext -->
+    <cpt id="VehiclePositionNext">
+      <state id="Left" /><state id="Center" /><state id="Right" />
+      <parents>Decision VehiclePosition</parents>
+      <probabilities>
+        0.90 0.05 0.05   0.90 0.05 0.05   0.90 0.05 0.05
+        0.05 0.90 0.05   0.05 0.90 0.05   0.05 0.90 0.05
+        0.05 0.05 0.90   0.05 0.05 0.90   0.05 0.05 0.90
+      </probabilities>
+    </cpt>
+  </nodes>
+  <extensions>
+    <genie version="1.0" app="GeNIe 5.0" name="Vehicle Decision Network">
+      <comment>Rete con SensorReading e transizione posizione next</comment>
+    </genie>
+  </extensions>
+</smile>
